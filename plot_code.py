@@ -120,9 +120,9 @@ def plot_columns(df,j):
     for column in df.columns:
         plt.plot(df.index, df[column], label=column)
 
-    plt.xlabel('committe_size')  # Customize the x-axis label as needed
+    plt.xlabel('committe_size in percentage')  # Customize the x-axis label as needed
     plt.ylabel('similarity in percentage')  # Customize the y-axis label as needed
-    plt.title(f'similarity_between_{j}')  # Customize the plot title as needed
+    plt.title(f'{j}')  # Customize the plot title as needed
     plt.legend()  # Add legend to the plot
     plt.show()
 
@@ -138,6 +138,7 @@ def get_normalised_result(df):
         i.set_index(i.iloc[:, -1], inplace=True)
         # Drop the last column
         i = i.iloc[:, :-1]
+        i.index.name = None
         normalised_dfs_list.append(i)
 
     return normalised_dfs_list
@@ -164,7 +165,7 @@ def store_dfs_in_mongodb(cleint_name_t,database_name_t, collection_name_t, list_
         # Store each DataFrame in MongoDB
         for idx, df in enumerate(list_of_dfs):
             # Convert DataFrame to JSON string
-            df_json = df.to_json(orient='records')
+            df_json = df.to_json(orient='split')
             # Insert JSON data into MongoDB
             collection.insert_one({'df_id': idx, 'df_data': json.loads(df_json)})
 
