@@ -1,8 +1,9 @@
 # Plot each row as a separate line
 from itertools import combinations
-
+import json
 import numpy as np
 import pandas as pd
+import pymongo
 from matplotlib import pyplot as plt
 from scipy.interpolate import UnivariateSpline
 import pandas as pd
@@ -130,15 +131,51 @@ def get_normalised_result(df):
     normalised_dfs_list = []
 
     for i in chunked_dfs:
+
         step_size = 100 / len(i)
         i = i.copy()
-        i.loc[:, 'Nomalised_committe_size'] = np.arange(1, 100, step_size)[:len(i)]
+        i.loc[:, 'Nomalised_committe_size'] = np.arange(0, 100, step_size)[:len(i)]
         i.set_index(i.iloc[:, -1], inplace=True)
         # Drop the last column
         i = i.iloc[:, :-1]
         normalised_dfs_list.append(i)
 
     return normalised_dfs_list
+
+
+def store_dfs_in_mongodb(cleint_name_t,database_name_t, collection_name_t, list_of_dfs):
+    """
+    Store a list of pandas DataFrames into MongoDB.
+
+    Parameters:
+    - uri (str): MongoDB connection URI (e.g., 'mongodb://localhost:27017/')
+    - database_name (str): Name of the MongoDB database
+    - collection_name (str): Name of the MongoDB collection to store DataFrames
+    - list_of_dfs (list): List of pandas DataFrames to store in MongoDB
+    """
+    # Connect to MongoDB
+    mongo_client = pymongo.MongoClient(cleint_name_t)
+
+    # Access the specified database and collection
+    db = mongo_client[database_name_t]
+    collection = db[collection_name_t]
+
+    try:
+        # Store each DataFrame in MongoDB
+        for idx, df in enumerate(list_of_dfs):
+            # Convert DataFrame to JSON string
+            df_json = df.to_json(orient='records')
+            # Insert JSON data into MongoDB
+            collection.insert_one({'df_id': idx, 'df_data': json.loads(df_json)})
+
+        print("DataFrames stored successfully in MongoDB.")
+
+    except Exception as e:
+        print(f"Error occurred while storing DataFrames in MongoDB: {e}")
+
+    finally:
+        # Close MongoDB connection
+        mongo_client.close()
 
 def plot_normalised_result(normalised_dfs_list):
     namel = list(combinations(list(range(0, 9)), 2))
