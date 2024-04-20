@@ -1,11 +1,7 @@
-# Plot each row as a separate line
 from itertools import combinations
 import json
-import numpy as np
-import pandas as pd
 import pymongo
 from matplotlib import pyplot as plt
-from scipy.interpolate import UnivariateSpline
 import pandas as pd
 import numpy as np
 
@@ -103,27 +99,52 @@ def interpolate_and_merge(dfs, num_points):
 
 
 
-def plot_row(df):
+def plot_row(df,j):
+    # Create a larger square-shaped plot
+    plt.figure(figsize=(8, 8))
+
+    # Iterate over each row in the DataFrame
     for index, row in df.iterrows():
-        plt.plot(row, label=index)
-        # Add labels and legend
+        plt.plot(row, label=index)  # Plot each row with a label
 
-    plt.xlabel('X-axis')
-    plt.ylabel('Y-axis')
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    # Set the y-axis limits to range from 0 to 1
+    plt.ylim(0, 1)
+
+    # Set aspect ratio to be equal (to make the plot square)
+    plt.gca().set_aspect('equal', adjustable='box')
+
+    # Add labels and legend
+    plt.xlabel('rising_p')
+    plt.ylabel('difference in percentage')
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))  # Adjust legend position
+    plt.title(f"{j}")
+    # Adjust layout to prevent overlapping elements
     plt.tight_layout()
-
+    plt.savefig(f"{j}.png")
     # Show the plot
     plt.show()
 
+
+
 def plot_columns(df,j):
+    # Create a larger square-shaped plot
+    plt.figure(figsize=(8, 8))
+
     for column in df.columns:
         plt.plot(df.index, df[column], label=column)
+
+
+
 
     plt.xlabel('committe_size in percentage')  # Customize the x-axis label as needed
     plt.ylabel('similarity in percentage')  # Customize the y-axis label as needed
     plt.title(f'{j}')  # Customize the plot title as needed
-    plt.legend()  # Add legend to the plot
+    plt.legend()  # Adjust legend position
+
+    # Adjust layout to prevent overlapping elements
+    plt.tight_layout()
+    plt.savefig(f'{j}_plot.png')
+    # Show the plot
     plt.show()
 
 def get_normalised_result(df):

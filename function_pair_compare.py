@@ -177,7 +177,20 @@ def mergeGroup(cleint_name, db_name, collection_name):
     return averaged_df
 # df = mergeGroup(cleint_name, db_name, collection_name)
 # print(df)
-
+# calculate a df with avg value for 10 or 9 rounds of calculation, each setting will be calculated 10 times
+# get the following result
+#    0.1       0.2       0.3       0.4       0.5       0.6       0.7       0.8       0.9
+# Original_Index
+# (0, 1)_1        1.000000  1.000000  1.000000  1.000000  1.000000  1.000000  1.000000  1.000000  1.000000
+# (0, 1)_2        0.500000  0.500000  0.500000  0.500000  0.500000  0.500000  0.500000  0.500000  0.500000
+# (0, 1)_3        0.333333  0.333333  0.333333  0.333333  0.333333  0.333333  0.333333  0.333333  0.333333
+# (0, 1)_4        0.500000  0.500000  0.500000  0.500000  0.500000  0.500000  0.500000  0.500000  0.500000
+# (0, 1)_5        0.600000  0.600000  0.600000  0.600000  0.600000  0.600000  0.600000  0.600000  0.600000
+# (0, 1)_6        0.666667  0.666667  0.666667  0.666667  0.666667  0.666667  0.666667  0.666667  0.666667
+# (0, 1)_7        0.857143  0.857143  0.857143  0.857143  0.857143  0.857143  0.857143  0.857143  0.857143
+# (0, 1)_8        1.000000  1.000000  1.000000  1.000000  1.000000  1.000000  1.000000  1.000000  1.000000
+# (0, 2)_1        1.000000  1.000000  1.000000  1.000000  1.000000  1.000000  1.000000  1.000000  1.000000
+# (0, 2)_2        0.500000  0.500000  0.500000  0.500000  0.500000  0.500000  0.500000  0.500000  0.500000
 def check_percentage_stable_value(df):
     # Align the DataFrame with its first column
     df_aligned = df.eq(df.iloc[:, 0], axis=0)
@@ -188,7 +201,7 @@ def check_percentage_stable_value(df):
     # Calculate the percentage of rows where all values are the same
     percent_same = (all_same.sum() / len(df)) * 100
 
-    print(f"{percent_same:.2f}% of this pair do not change with rising p.")
+    print(f"{percent_same:.2f}% of the comparisons between this pair stay stable with rising p.")
     return percent_same
 
 
@@ -203,6 +216,7 @@ def percentage_methods_compare(df_func_merge_group):
     percentage_list = []
     percentage_dict = {}
     chunk_size = int(len(df_func_merge_group)/36)
+    print(chunk_size)
     # Iterate over the DataFrame in chunks
     for i in range(0, len(df_func_merge_group), chunk_size):
         # Get the chunk of rows

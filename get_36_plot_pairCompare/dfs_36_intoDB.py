@@ -9,7 +9,7 @@ import plot_code
 
 cleint_name = "mongodb://localhost:27017/"
 db_name_f = "linux_temp"
-db_name_t = "DataSet_36pairs"
+db_name_t = "DataSet_36pairs_2"
 
 # below is with rising committee size_ we normalize the committe size from 1 to 10
 # ======================================================================

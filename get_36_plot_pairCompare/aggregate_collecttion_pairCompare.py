@@ -6,7 +6,6 @@ import pandas as pd
 
 import plot_code
 
-
 # ======================================================================
 
 """
@@ -23,6 +22,8 @@ Args:
 Returns:
     list: List of 36 integrated pandas DataFrames.
 """
+
+
 # ======================================================================
 
 def aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/'):
@@ -82,36 +83,52 @@ def aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/')
         return None
 
 
-# Example usage:
-if __name__ == "__main__":
-    # MongoDB settings
-    database_name = 'your_database_name'
-    collection_names = ['collection1', 'collection2', 'collection3']  # List of collection names
 
-    # Aggregate DataFrames from collections
-    aggregated_dfs = aggregate_collections(database_name, collection_names)
-    if aggregated_dfs:
-        print("DataFrames aggregated successfully!")
-        # aggregated_dfs now contains a list of 36 integrated pandas DataFrames
-        for idx, df in enumerate(aggregated_dfs):
-            print(f"DataFrame {idx + 1} shape: {df.shape}")
-
-        # Perform further processing on aggregated_dfs as needed
-    else:
-        print("Error aggregating DataFrames from collections.")
 
 # ======================================================================
 # ======================================================================
 
+def final_plot_rising_committee_size_36pics(database_name):
 
-database_name = "DataSet_36pairs"
+    df_list = aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/')
 
-l = aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/')
+    list_of_combis_pd = list(combinations(list(range(0, 9)), 2))
+    list_methods = ["avg_avg", "max_avg", "min_avg", "max_max", "min_min", "max_min", "min_max", "avg_min", "avg_max"]
+    k = 0
+    for i in df_list:
+        plot_code.plot_columns(i,list_methods[list_of_combis_pd[k][0]] + " " + "vs" + " " + list_methods[
+             list_of_combis_pd[k][1]] )
+        k += 1
 
-list_of_combis_pd = list(combinations(list(range(0, 9)), 2))
-list_methods = ["avg_avg", "max_avg", "min_avg", "max_max", "min_min", "max_min", "min_max", "avg_min","avg_max"]
-k = 0
-for i in l:
-    plot_code.plot_columns(i, list_methods[list_of_combis_pd[k][0]] + " " + "vs" + " " + list_methods[
-        list_of_combis_pd[k][1]])
-    k += 1
+
+
+
+
+# ======================================================================
+# ======================================================================
+
+def final_plot_rising_p_1pic(database_name,file_name):
+    df_list = aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/')
+    df = pd.DataFrame()
+    k = 0
+
+    for i in df_list:
+        avg_values = i.mean(axis=0)
+        df1 = pd.DataFrame([avg_values], columns=avg_values.index)
+        df = df._append(df1)
+        k += 1
+    list_n = ['avg_avg vs max_avg', 'avg_avg vs min_avg', 'avg_avg vs max_max', 'avg_avg vs min_min', 'avg_avg vs max_min',
+              'avg_avg vs min_max', 'avg_avg vs avg_min', 'avg_avg vs avg_max', 'max_avg vs min_avg', 'max_avg vs max_max',
+              'max_avg vs min_min', 'max_avg vs max_min', 'max_avg vs min_max', 'max_avg vs avg_min', 'max_avg vs avg_max',
+              'min_avg vs max_max', 'min_avg vs min_min', 'min_avg vs max_min', 'min_avg vs min_max', 'min_avg vs avg_min',
+              'min_avg vs avg_max', 'max_max vs min_min', 'max_max vs max_min', 'max_max vs min_max', 'max_max vs avg_min',
+              'max_max vs avg_max', 'min_min vs max_min', 'min_min vs min_max', 'min_min vs avg_min', 'min_min vs avg_max',
+              'max_min vs min_max', 'max_min vs avg_min', 'max_min vs avg_max', 'min_max vs avg_min', 'min_max vs avg_max',
+              'avg_min vs avg_max']
+
+    df.index = list_n
+    plot_code.plot_row(df,file_name)
+    print(df)
+
+
+
