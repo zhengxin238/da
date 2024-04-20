@@ -7,6 +7,24 @@ import pandas as pd
 import plot_code
 
 
+# ======================================================================
+
+"""
+
+!!!!!!!Before running this func,  we need to run dfs_36_intoDB  and get the data ready for this func!!!!!
+
+Aggregate DataFrames from multiple collections in MongoDB.
+
+Args:
+    database_name (str): Name of the MongoDB database.
+    collection_names (list): List of collection names to aggregate.
+    mongo_uri (str, optional): MongoDB connection URI. Defaults to 'mongodb://localhost:27017/'.
+
+Returns:
+    list: List of 36 integrated pandas DataFrames.
+"""
+# ======================================================================
+
 def aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/'):
     """
     Aggregate DataFrames from multiple collections in MongoDB.
@@ -81,6 +99,10 @@ if __name__ == "__main__":
         # Perform further processing on aggregated_dfs as needed
     else:
         print("Error aggregating DataFrames from collections.")
+
+# ======================================================================
+# ======================================================================
+
 
 database_name = "DataSet_36pairs"
 
