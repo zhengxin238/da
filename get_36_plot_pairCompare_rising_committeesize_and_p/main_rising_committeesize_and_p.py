@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import pandas as pd
 import function_pair_compare
 import plot_code
-from get_36_plot_pairCompare.aggregate_collecttion_pairCompare import final_plot_rising_committee_size_36pics, \
+from get_36_plot_pairCompare_rising_committeesize_and_p.aggregate_collecttion_pairCompare import final_plot_rising_committee_size_36pics, \
     final_plot_rising_p_1pic
 
 # cleint_name = "mongodb://localhost:27017/"
