@@ -10,7 +10,7 @@ pd.set_option('display.width', None)  # Auto-detect width
 
 
 cleint_name = "mongodb://localhost:27017/"
-db_name = "DataTest_Voting_10"
+db_name = "linux_corrected"
 collection_name = '00000009'
 chunksize = 10
 

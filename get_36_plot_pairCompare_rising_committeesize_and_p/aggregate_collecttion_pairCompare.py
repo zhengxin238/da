@@ -25,7 +25,7 @@ Returns:
 
 
 # ======================================================================
-
+#
 def aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/'):
     """
     Aggregate DataFrames from multiple collections in MongoDB.
@@ -85,18 +85,68 @@ def aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/')
 
 
 
+
+
+
+
+
+def aggregate_and_save_collections(integrated_dfs, mongo_uri='mongodb://localhost:27017/'):
+    """
+    Aggregate DataFrames and save them into a new database and collections in MongoDB.
+
+    Args:
+        integrated_dfs (list): List of DataFrames to be integrated.
+        mongo_uri (str, optional): MongoDB connection URI. Defaults to 'mongodb://localhost:27017/'.
+    """
+    try:
+        # Establish connection to the new database
+        new_database_name = 'da_result_database'  # New database name
+        new_collection_name = 'result_pair_plot'  # New collection name
+        new_collection_name1 = 'result_integrated_plot'  # New integrated collection name
+
+        # Establish connection to the new database
+        new_client = pymongo.MongoClient(mongo_uri)
+        new_db = new_client[new_database_name]
+
+        # Insert each DataFrame into the 'result_pair_plot' collection
+        for df in integrated_dfs:
+            new_db[new_collection_name].insert_one(df.to_dict(orient='split'))
+
+        # Integrate all DataFrames into one DataFrame
+        init_df = integrated_dfs[0]
+        for df in integrated_dfs[1:]:
+            init_df = init_df._append(df)
+            init_df = init_df.groupby(init_df.index).mean()
+
+        # Insert the integrated DataFrame into the 'result_integrated_plot' collection
+        new_db[new_collection_name1].insert_one(init_df.to_dict(orient='split'))
+
+        # Close connection to the new database
+        new_client.close()
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+# Example usage:
+# Pass your list of integrated DataFrames as input to the function
+# aggregate_and_save_collections(integrated_dfs)
+
+
+
 # ======================================================================
 # ======================================================================
 
 def final_plot_rising_committee_size_36pics(database_name):
 
     df_list = aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/')
-
+    aggregate_and_save_collections(df_list)
     list_of_combis_pd = list(combinations(list(range(0, 9)), 2))
     list_methods = ["avg_avg", "max_avg", "min_avg", "max_max", "min_min", "max_min", "min_max", "avg_min", "avg_max"]
     k = 0
     for i in df_list:
         plot_code.plot_columns(i,list_methods[list_of_combis_pd[k][0]] + " " + "vs" + " " + list_methods[
+             list_of_combis_pd[k][1]] )
+        plot_code.plot_columns_integrated(i, "integrated" + list_methods[list_of_combis_pd[k][0]] + " " + "vs" + " " + list_methods[
              list_of_combis_pd[k][1]] )
         k += 1
 
@@ -127,6 +177,19 @@ def final_plot_rising_p_1pic(database_name,file_name):
               'avg_min vs avg_max']
 
     df.index = list_n
+
+    new_database_name = 'da_result_database'  # New database name
+    new_collection_name = 'result_p_plot'  # New collection name
+    # Establish connection to the new database
+    new_client = pymongo.MongoClient('mongodb://localhost:27017/')
+    new_db = new_client[new_database_name]
+
+
+    # Insert the integrated DataFrame into the 'result_integrated_plot' collection
+    new_db[new_collection_name].insert_one(df.to_dict(orient='split'))
+
+    # Close connection to the new database
+    new_client.close()
     plot_code.plot_row(df,file_name)
     print(df)
 
