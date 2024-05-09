@@ -100,9 +100,9 @@ def aggregate_and_save_collections(integrated_dfs, mongo_uri='mongodb://localhos
     """
     try:
         # Establish connection to the new database
-        new_database_name = 'da_result_database'  # New database name
-        new_collection_name = 'result_pair_plot'  # New collection name
-        new_collection_name1 = 'result_integrated_plot'  # New integrated collection name
+        new_database_name = 'da_result_one_final'  # New database name
+        new_collection_name = 'one_pair_plot'  # New collection name
+        new_collection_name1 = 'one_integrated_pair_plot'  # New integrated collection name
 
         # Establish connection to the new database
         new_client = pymongo.MongoClient(mongo_uri)
@@ -157,7 +157,7 @@ def final_plot_rising_committee_size_36pics(database_name):
 # ======================================================================
 # ======================================================================
 
-def final_plot_rising_p_1pic(database_name,file_name):
+def final_plot_rising_p_multi_pic(database_name,file_name):
     df_list = aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/')
     df = pd.DataFrame()
     k = 0
@@ -179,7 +179,7 @@ def final_plot_rising_p_1pic(database_name,file_name):
     df.index = list_n
 
     new_database_name = 'da_result_database'  # New database name
-    new_collection_name = 'result_p_plot'  # New collection name
+    new_collection_name = 'two_p_plot'  # New collection name
     # Establish connection to the new database
     new_client = pymongo.MongoClient('mongodb://localhost:27017/')
     new_db = new_client[new_database_name]
@@ -190,8 +190,58 @@ def final_plot_rising_p_1pic(database_name,file_name):
 
     # Close connection to the new database
     new_client.close()
-    plot_code.plot_row(df,file_name)
+    plot_code.plot_row_integrated(df,file_name)
+    plot_code.plot_row(df, file_name)
     print(df)
+
+
+import matplotlib.pyplot as plt
+
+
+# def final_plot_rising_p_multi_pic(database_name, file_name):
+#     df_list = aggregate_collections(database_name, mongo_uri='mongodb://localhost:27017/')
+#     df = pd.DataFrame()
+#     k = 0
+#
+#     for i in df_list:
+#         avg_values = i.mean(axis=0)
+#         df1 = pd.DataFrame([avg_values], columns=avg_values.index)
+#         df = df.append(df1)
+#         k += 1
+#
+#     list_n = ['avg_avg vs max_avg', 'avg_avg vs min_avg', 'avg_avg vs max_max', 'avg_avg vs min_min',
+#               'avg_avg vs max_min',
+#               'avg_avg vs min_max', 'avg_avg vs avg_min', 'avg_avg vs avg_max', 'max_avg vs min_avg',
+#               'max_avg vs max_max',
+#               'max_avg vs min_min', 'max_avg vs max_min', 'max_avg vs min_max', 'max_avg vs avg_min',
+#               'max_avg vs avg_max',
+#               'min_avg vs max_max', 'min_avg vs min_min', 'min_avg vs max_min', 'min_avg vs min_max',
+#               'min_avg vs avg_min',
+#               'min_avg vs avg_max', 'max_max vs min_min', 'max_max vs max_min', 'max_max vs min_max',
+#               'max_max vs avg_min',
+#               'max_max vs avg_max', 'min_min vs max_min', 'min_min vs min_max', 'min_min vs avg_min',
+#               'min_min vs avg_max',
+#               'max_min vs min_max', 'max_min vs avg_min', 'max_min vs avg_max', 'min_max vs avg_min',
+#               'min_max vs avg_max',
+#               'avg_min vs avg_max']
+#
+#     df.index = list_n
+#
+#     # Plot each row in a separate plot
+#     for index, row in df.iterrows():
+#         plt.figure()  # Create a new figure for each plot
+#         plt.plot(row.values)  # Plot the values of the row
+#         plt.title(index)  # Set the title of the plot to the row index
+#         plt.xlabel('Column')  # Set the x-axis label
+#         plt.ylabel('Value')  # Set the y-axis label
+#         plt.savefig(f"{file_name}_{index.replace(' ', '_')}.png")  # Save the plot to a file
+#         plt.close()  # Close the plot to release memory
+#
+#     print(df)
+
+
+# Example usage
+
 
 
 

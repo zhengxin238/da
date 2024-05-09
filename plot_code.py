@@ -1,3 +1,4 @@
+import os
 from itertools import combinations
 import json
 import pymongo
@@ -99,10 +100,49 @@ def interpolate_and_merge(dfs, num_points):
     return avg_merged_df
 
 
-
-
+import matplotlib.pyplot as plt
+from itertools import cycle
 
 def plot_row(df, j):
+    # Ensure the output directory exists
+    output_dir = 'D:/output_final/da_one_rows/'
+    os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
+    markers = cycle(['o', 's', '^', 'd', 'x'])  # Generate markers dynamically
+    # Iterate over each row in the DataFrame
+    for index, row in df.iterrows():
+        # Create a new figure for each row
+        plt.figure(figsize=(8, 8))  # Adjust figure size as needed
+        marker = next(markers)
+        plt.scatter(df.columns, row, label=index, marker=marker, s=20)  # Plot marks for each row with a label
+
+        # Set the y-axis limits to range from 0 to 1
+        plt.ylim(0, 1)
+
+        # Set aspect ratio to be equal (to make the plot square)
+        plt.gca().set_aspect('equal', adjustable='box')
+
+        # Add labels and legend
+        plt.xlabel('rising_p')
+        plt.ylabel('difference in percentage')
+        plt.legend(loc='best', fontsize='small')  # Adjust legend position and font size
+        plt.title(f"{j}_{index}")
+
+        # Save the plot
+        plt.savefig(f"{output_dir}/{j}_{index}_marks.png")
+
+        # Close the plot to release memory
+        plt.close()
+
+
+
+
+
+def plot_row_integrated(df, j):
+    # Ensure the output directory exists
+    output_dir = 'D:/output_final/da_one_rows/'
+    os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
     # Create a larger square-shaped plot
     plt.figure(figsize=(8, 8))
     markers = cycle(['o', 's', '^', 'd', 'x'])  # Generate markers dynamically
@@ -127,13 +167,17 @@ def plot_row(df, j):
     plt.tight_layout()
 
     # Save the plot
-    plt.savefig(f"{j}_marks.png")
+    plt.savefig(f"{output_dir}/{j}_marks.png")
 
     # Show the plot
     plt.show()
 
 
 def plot_columns_integrated(df, j):
+    # Ensure the output directory exists
+    output_dir = 'D:/output_final/da_one_columns/'
+    os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
     # Create a larger square-shaped plot
     plt.figure(figsize=(8, 8))
 
@@ -150,12 +194,17 @@ def plot_columns_integrated(df, j):
 
     # Adjust layout to prevent overlapping elements
     plt.tight_layout()
-    plt.savefig(f'{j}_plot.png')
+    plt.savefig(f'{output_dir}/{j}_plot.png')
     # Show the plot
     plt.show()
 
 
 def plot_columns(df, j):
+
+    # Ensure the output directory exists
+    output_dir = 'D:/output_final/da_one_columns/'
+    os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
     markers = cycle(['o', 's', '^', 'd', 'x'])  # Generate markers dynamically
 
     for column in df.columns:
@@ -168,7 +217,7 @@ def plot_columns(df, j):
         plt.legend()  # Adjust legend position
         # Adjust layout to prevent overlapping elements
         plt.tight_layout()
-        plt.savefig(f'{j}_{column}_plot.png')
+        plt.savefig(f'{output_dir}/{j}_{column}_plot.png')
         # Show the plot
         plt.show()
 
