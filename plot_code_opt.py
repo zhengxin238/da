@@ -1,3 +1,4 @@
+import os
 from itertools import combinations
 import json
 import pymongo
@@ -27,6 +28,10 @@ def insert_into_mongodb(client, db, collection, data):
 
 
 def plot_row(df, j):
+    # Ensure the output directory exists
+    output_dir = 'D:/output_final/da_two_rows/'
+    os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
     # Create a larger square-shaped plot
     plt.figure(figsize=(8, 8))
     markers = cycle(['o', 's', '^', 'd', 'x'])  # Generate markers dynamically
@@ -51,7 +56,7 @@ def plot_row(df, j):
     plt.tight_layout()
 
     # Save the plot
-    plt.savefig(f"{j}_marks.png")
+    plt.savefig(f"{output_dir}/{j}_marks.png")
 
     # Show the plot
     plt.show()
@@ -79,6 +84,10 @@ def plot_columns_integrated(df, j):
     plt.show()
 
 def plot_columns_integrated(df, j):
+    # Ensure the output directory exists
+    output_dir = 'D:/output_final/da_two_columns/'
+    os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
     # Create a larger square-shaped plot
     plt.figure(figsize=(8, 8))
 
@@ -95,11 +104,16 @@ def plot_columns_integrated(df, j):
 
     # Adjust layout to prevent overlapping elements
     plt.tight_layout()
-    plt.savefig(f'integrated_{j}_plot.png')
+    plt.savefig(f'{output_dir}/integrated_{j}_plot.png')
     # Show the plot
     plt.show()
 
 def plot_columns(df, j):
+
+    # Ensure the output directory exists
+    output_dir = 'D:/output_final/da_two_columns/'
+    os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
     markers = cycle(['o', 's', '^', 'd', 'x'])  # Generate markers dynamically
 
     for column in df.columns:
@@ -112,7 +126,7 @@ def plot_columns(df, j):
         plt.legend()  # Adjust legend position
         # Adjust layout to prevent overlapping elements
         plt.tight_layout()
-        plt.savefig(f'{j}_{column}_plot.png')
+        plt.savefig(f'{output_dir}/{j}_{column}_plot.png')
         # Show the plot
         plt.show()
 
